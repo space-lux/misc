@@ -69,25 +69,26 @@ var DraC=(function(){
 		}
 	};
 	
-	self.line=function(c,d) {
+	self.line=function(c,d,nl) {
 		var	w=c.width,
-				h=c.height,
-				maxi=0,
-				mini=0,
-				n=d.values[0].length,
-				hdiv=w/n,
-				hstart=hdiv/2,
-				fontsize=10,
-				lineweight=4,
-				vdiv,
-				vstart=lineweight/2,
-				vs=h-fontsize-lineweight,
-				hs=(n-1)*hdiv,
-				vtext=h-fontsize,
-				hpos=hstart,
-				vpos,
-				vlinespacing=50,
-				colors=self.createColorSet(d.values.length);
+			h=c.height,
+			maxi=0,
+			mini=0,
+			n=d.values[0].length,
+			hdiv=(w-22)/n,
+			hstart=20,
+			fontsize=10,
+			lineweight=4,
+			vdiv,
+			vstart=lineweight/2,
+			vs=h-fontsize-lineweight,
+			hs=(n-1)*hdiv,
+			vtext=h-fontsize,
+			hpos=hstart,
+			vpos,
+			vlinespacing=50,
+			hcolspacing=80,
+			colors=self.createColorSet(d.values.length);
 		function valueToY(v) {
 			return vstart-v*vdiv+maxi*vdiv;
 		}
@@ -105,26 +106,30 @@ var DraC=(function(){
 		
 		vdiv=vs/(maxi-mini);
 		vlinespacing=Math.pow(5,Math.floor(Math.log(vlinespacing/vdiv)/Math.log(5)));
+		hcolspacing=Math.max(1,Math.floor(hcolspacing/hdiv));		
+		if(nl)
+			hcolspacing=1;
 		c.textAlign="center";
-		for(i in d.values[0]) {	
+		while(hpos<hs+hcolspacing*hdiv) {	
 			c.beginPath();
 			c.moveTo(hpos,vstart);
 			c.lineTo(hpos,vstart+vs);
 			c.stroke();
-			c.fillText(d.labels[i],hpos,2*vstart+vs+fontsize);
-			hpos+=hdiv;
+			if(d.labels[Math.floor((hpos-hstart)/hdiv)])
+				c.fillText(d.labels[Math.floor((hpos-hstart)/hdiv)],hpos,2*vstart+vs+fontsize);
+			hpos+=hcolspacing*hdiv;
 		}
 		
 		vpos=vs+(mini%vlinespacing)*vdiv;
 		
 		c.textAlign="end";
 		while(vpos>0) {
-				c.beginPath();
-				c.moveTo(hstart,vpos+vstart);
-				c.lineTo(hpos-hdiv,vpos+vstart);
-				c.stroke();
-				c.fillText(Math.round(maxi-(vpos)/vdiv),hstart-5,vpos+vstart+fontsize/2);
-				vpos-=vlinespacing*vdiv;
+			c.beginPath();
+			c.moveTo(hstart,vpos+vstart);
+			c.lineTo(hpos-hdiv*hcolspacing,vpos+vstart);
+			c.stroke();
+			c.fillText(Math.round(maxi-(vpos)/vdiv),hstart-5,vpos+vstart+fontsize/2);
+			vpos-=vlinespacing*vdiv;
 		}
 		
 		for(i in d.values) {
