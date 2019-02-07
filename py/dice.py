@@ -3,7 +3,9 @@ import random
 class dice():
     def __init__(self,f=20):
         self.f=int(f)
-    def __call__(self,f=20):
+    def __call__(self,f=0):
+        if not(f):
+            f=self.f
         return dice(f)
     def __repr__(self):
         return str(random.randint(1,self.f))
