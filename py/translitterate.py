@@ -31,3 +31,16 @@ def tr_char(c):
 
 def tr_str(s):
     return ''.join(map(tr_char,s.replace("th","ᚦ")))
+
+def utr_char(c):
+    if c=="ᚦ":
+        return "th";
+    if c=="᛫":
+        return " ";
+    try:
+        return chr(ord('a')+futhark.index(c))
+    except:
+        return c
+
+def utr_str(s):
+    return ''.join(map(utr_char,s))
