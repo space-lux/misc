@@ -34,7 +34,7 @@ void group(string& text,char open) {
     size_t found=text.find(open);
     size_t found1;
     size_t found2;
-    string lc="+-.,";
+    string lc="+-z";
     string tmp;
     if(open=='<') {
         close='>';
@@ -55,7 +55,7 @@ void group(string& text,char open) {
 }
 
 int main(int argc, char **argv) {
-	string lc="-+><[].,/";
+    string lc="-+><[].,/";
     string text;
     char passes=3;
 
@@ -70,64 +70,64 @@ int main(int argc, char **argv) {
     bool showHelp=false;
 
     for (int argn = 1 ; argn < argc ; argn++) {
-		char* arg = argv[argn];
-		size_t argl = strlen(arg);
-		if (arg[0] == '-' && argl > 1 && arg[1] != '-') {
-			for (int nc = 1 ; nc < argl ; nc++) {
-				switch (arg[nc]) {
+        char* arg = argv[argn];
+        size_t argl = strlen(arg);
+        if (arg[0] == '-' && argl > 1 && arg[1] != '-') {
+            for (int nc = 1 ; nc < argl ; nc++) {
+                switch (arg[nc]) {
                     case 'i': {
                         ifileb=true;
-						if (nc == argl - 1
-							&& argn < argc - 1) {
-							argn++;
-							ifilename=argv[argn];
-						} else
-							std::cerr << "-i requires a string right after." << std::endl;
+                        if (nc == argl - 1
+                            && argn < argc - 1) {
+                            argn++;
+                            ifilename=argv[argn];
+                        } else
+                            std::cerr << "-i requires a string right after." << std::endl;
                     } break;
                     case 'o': {
                         ofileb=true;
-						if (nc == argl - 1
-							&& argn < argc - 1) {
-							argn++;
-							ofilename=argv[argn];
-						} else
-							std::cerr << "-o requires a string right after." << std::endl;
+                        if (nc == argl - 1
+                            && argn < argc - 1) {
+                            argn++;
+                            ofilename=argv[argn];
+                        } else
+                            std::cerr << "-o requires a string right after." << std::endl;
                     } break;
                     case 'l': {
                         ofileb=true;
-						if (nc == argl - 1
-							&& argn < argc - 1) {
-							argn++;
-							lc=argv[argn];
-						} else
-							std::cerr << "-l requires a string right after." << std::endl;
+                        if (nc == argl - 1
+                            && argn < argc - 1) {
+                            argn++;
+                            lc=argv[argn];
+                        } else
+                            std::cerr << "-l requires a string right after." << std::endl;
                     } break;
                     case 'h': {
                         showHelp=true;
                     }
-				}
-			}
-		} else if (!strcmp(arg, "--help"))
-			showHelp = true;
+                }
+            }
+        } else if (!strcmp(arg, "--help"))
+            showHelp = true;
     }
 
-	if(showHelp) {
+    if(showHelp) {
         cout<<"BFOptimizer -- reduces BF/GF files size"<<endl;
         cout<<"usage : bop [-i INPUT_FILENAME] [-o OUTPUT_FILENAME] [-l LEGAL_CHARACTERS]"<<endl;
         cout<<""<<endl;
-	}
+    }
 
-	if(ifileb) {
+    if(ifileb) {
         ifile.open(ifilename.c_str());
         while(getline(ifile,line)) {
             text+=line;
         }
         ifile.close();
-	} else if(!showHelp) {
+    } else if(!showHelp) {
         while(getline(cin,line)) {
             text+=line;
         }
-	}
+    }
 
     size_t found=text.find_first_not_of(lc);
     while(found!=string::npos) {
@@ -140,6 +140,7 @@ int main(int argc, char **argv) {
         replace(text,"//","/");
         replace(text,"[+]","[-]");
         replace(text,"[-][-]","[-]");
+        replace(text,"[-]","z");
         strip(text,"[]");
         strip(text,"><");
         strip(text,"<>");
@@ -156,15 +157,16 @@ int main(int argc, char **argv) {
         strip(text,"<>");
         group(text,'>');
     }
+    replace(text,"z","[-]");
 
 
-	if(ofileb) {
+    if(ofileb) {
         ofile.open(ofilename.c_str());
         ofile<<text;
         ofile.close();
-	} else {
+    } else {
         cout<<text;
-	}
+    }
 
     return 0;
 }
