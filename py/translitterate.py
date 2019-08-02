@@ -25,7 +25,10 @@ def tr_char(c):
     try:
         if c==" ":
             return "᛫"
-        return futhark[ord(remove_accents(c.lower()))-ord("a")]
+        o=ord(remove_accents(c.lower()))-ord("a")
+        if o<0:
+            raise Exception
+        return futhark[o]
     except:
         return c
 
